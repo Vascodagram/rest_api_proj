@@ -1,0 +1,4 @@
+/rest_api_proj/.env
+venv
+.idea
+*.pyc
