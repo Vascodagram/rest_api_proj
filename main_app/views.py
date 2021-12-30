@@ -1,8 +1,6 @@
 from rest_framework import serializers, generics
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from .models import Car, CommentCar, Category
-from .serializers import CommentSerializer, CarDetailSerializers, UserSerializer
+from .serializers import CommentSerializer, CarDetailSerializers, UserSerializer, CategorySerializer
 from django.contrib.auth.models import User
 from .permissions import IsOwnerOrReadOnly
 # Create your views here.
@@ -38,6 +36,7 @@ class DetailCarView(generics.RetrieveDestroyAPIView):
 
 
 class CommentList(generics.ListCreateAPIView):
+    """View list of all comments"""
     queryset = CommentCar.objects.all()
     serializer_class = CommentSerializer
     permission_classes = (IsOwnerOrReadOnly, )
@@ -47,6 +46,22 @@ class CommentList(generics.ListCreateAPIView):
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    """View detailed list of all """
     queryset = CommentCar.objects.all()
     serializer_class = CommentSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
+
+
+class CategoryList(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = (IsOwnerOrReadOnly, )
+
+    def perform_create(self, serializer):
+        serializer.save(owner_car=self.request.user)
+
+
+class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CarDetailSerializers
     permission_classes = (IsOwnerOrReadOnly, )

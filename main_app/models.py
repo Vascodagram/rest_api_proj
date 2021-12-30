@@ -5,10 +5,16 @@ from rest_framework import serializers
 
 
 class Category(models.Model):
+    """Model of categories"""
     name = models.CharField('Category', max_length=30)
+    owner_car = models.ForeignKey(User, on_delete=models.CASCADE, related_name='categories')
+    cars = models.ManyToManyField('Car', related_name='categories', blank=True)
 
     def __str__(self):
         return f'Category: {self.name}'
+
+    class Meta:
+        verbose_name_plural = 'categories'
 
 
 class CommentCar(models.Model):
@@ -16,14 +22,14 @@ class CommentCar(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     body = models.TextField(blank=False, default='')
     owner_car = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
-    car = models.ForeignKey('Car', on_delete=models.CASCADE, related_name='comments')
+    cars = models.ForeignKey('Car', on_delete=models.CASCADE, related_name='comments')
 
     def __str__(self):
         return f'Comment: {self.owner_car}, create: {self.created}'
 
 
 class Car(models.Model):
-    category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True)
+    """Model 'Car' """
     car_brand = models.CharField('brand car', max_length=50)
     model_car = models.CharField('model car', max_length=50)
     vin_code = models.IntegerField('vin_code')
